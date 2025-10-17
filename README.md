@@ -54,6 +54,7 @@ npm install
 .
 ├── main.mjs                    # 애플리케이션 메인 진입점
 ├── package.json                # 프로젝트 의존성 및 스크립트
+├── package-lock.json
 ├── README.md                   # 프로젝트 안내
 ├── services/
 │   ├── ArticleService.mjs      # Article 관련 비즈니스 로직
