@@ -1,2 +1,8 @@
 node_modules/
-PULL_REQUEST.md
+__http__/
+.env
+.vscode
+
+
+refactoring_checklist.md
+Sprint Mission 3.md
