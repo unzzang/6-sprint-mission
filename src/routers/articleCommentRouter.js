@@ -11,19 +11,27 @@ import {
   deleteArticleComment,
   getArticleCommentList,
   getArticleComment,
-} from '../controllers/articleCommController.js';
-
+} from '../controllers/articleCommentController.js';
+import authenticate from '../middlewares/authenticate.js';
 const router = express.Router();
 
 router
   .route('/')
-  .post(validate(CreateArticleComment), asyncHandler(createArticleComment))
+  .post(
+    validate(CreateArticleComment),
+    authenticate,
+    asyncHandler(createArticleComment),
+  )
   .get(asyncHandler(getArticleCommentList));
 
 router
   .route('/:id')
-  .patch(validate(PatchArticleComment), asyncHandler(patchArticleComment))
+  .patch(
+    validate(PatchArticleComment),
+    authenticate,
+    asyncHandler(patchArticleComment),
+  )
   .get(asyncHandler(getArticleComment))
-  .delete(asyncHandler(deleteArticleComment));
+  .delete(authenticate, asyncHandler(deleteArticleComment));
 
 export default router;

@@ -5,6 +5,7 @@ import { getTags, getImages } from '../lib/prismaUtil.js';
 const productRepository = new ProductRepository(prisma);
 
 export const productService = {
+  // 생성하기
   create: async (productCreateData) => {
     const { tags, images, files, ...rest } = productCreateData;
 
@@ -18,6 +19,8 @@ export const productService = {
       return newProduct;
     });
   },
+
+  // 수정하기
   update: async (id, productUpdateData) => {
     const { tags, images, files, ...rest } = productUpdateData;
 
@@ -35,13 +38,26 @@ export const productService = {
       return updateProduct;
     });
   },
+
+  // 삭제하기
   delete: async (id) => {
     return productRepository.deleteProduct(id);
   },
+
+  // ID로 찾기
   findById: async (id) => {
     return productRepository.findProductById(id);
   },
-  find: async ({ sort, category, status, keyword, limit = 10, offset = 0 }) => {
+  // 찾기
+  find: async ({
+    sort,
+    category,
+    status,
+    keyword,
+    limit = 10,
+    offset = 0,
+    authorId,
+  }) => {
     // const  = req.query;
     // const limit = parseInt(req.query.limit || 10, 10);
     // const offset = parseInt(req.query.offset || 10, 10);
@@ -68,6 +84,7 @@ export const productService = {
         OR: [
           { name: { contains: keyword } },
           { description: { contains: keyword } },
+          { authorId },
         ],
       }),
     };

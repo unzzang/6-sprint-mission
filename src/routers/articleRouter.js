@@ -1,5 +1,5 @@
 import express from 'express';
-import articleCommRouter from './articleComRouter.js';
+import articleCommRouter from './articleCommentRouter.js';
 import { asyncHandler } from '../lib/asyncHandler.js';
 import { validate } from '../middlewares/validationMiddleware.js';
 import { CreateArticle, PatchArticle } from '../structs/articleStructs.js';
@@ -10,6 +10,7 @@ import {
   getArticleList,
   deleteArticle,
 } from '../controllers/articleController.js';
+import authenticate from '../middlewares/authenticate.js';
 
 const router = express.Router();
 
@@ -18,13 +19,13 @@ router.use('/comments', articleCommRouter);
 
 router
   .route('/')
-  .post(validate(CreateArticle), asyncHandler(createArticle))
+  .post(validate(CreateArticle), authenticate, asyncHandler(createArticle))
   .get(asyncHandler(getArticleList));
 
 router
   .route('/:id')
   .get(asyncHandler(getArticle))
-  .patch(validate(PatchArticle), asyncHandler(patchArticle))
-  .delete(asyncHandler(deleteArticle));
+  .patch(validate(PatchArticle), authenticate, asyncHandler(patchArticle))
+  .delete(authenticate, asyncHandler(deleteArticle));
 
 export default router;

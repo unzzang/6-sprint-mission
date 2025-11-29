@@ -16,10 +16,14 @@ datasource db {
 model User {
   id              String           @id @default(uuid())
   email           String           @unique
-  firstName       String
-  lastName        String
-  fullName        String
-  address         String
+  nickname        String           @unique
+  password        String
+  // firstName       String?
+  // lastName        String?
+  // fullName        String?
+  refreshToken    String?          @db.VarChar(255)
+  address         String?
+  images          UserImage[]
   createdAt       DateTime         @default(now())
   updatedAt       DateTime         @updatedAt
   userPreference  UserPreference?
@@ -27,6 +31,8 @@ model User {
   articles        Article[]
   productComments ProductComment[]
   articleComments ArticleComment[]
+  productLikes    ProductLike[]
+  articleLikes    ArticleLike[]
 }
 
 model UserPreference {
@@ -39,20 +45,22 @@ model UserPreference {
 }
 
 model Product {
-  id          String           @id @default(uuid())
-  name        String
-  description String?
-  category    Category
-  price       Float
-  stock       Int
-  status      ProductStatus    @default(ON_SALE)
-  createdAt   DateTime         @default(now())
-  updatedAt   DateTime         @updatedAt
-  tags        Tag[]
-  images      Image[]
-  comments    ProductComment[]
-  author      User             @relation(fields: [authorId], references: [id], onDelete: Cascade)
-  authorId    String
+  id           String           @id @default(uuid())
+  name         String
+  description  String?
+  category     Category
+  price        Float
+  stock        Int
+  status       ProductStatus    @default(ON_SALE)
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
+  tags         Tag[]
+  images       ProductImage[]
+  comments     ProductComment[]
+  likeCount    Int              @default(0)
+  author       User             @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  authorId     String
+  productLikes ProductLike[]
 }
 
 model Tag {
@@ -61,12 +69,30 @@ model Tag {
   products Product[]
 }
 
-model Image {
+model UserImage {
+  id        String   @id @default(uuid())
+  url       String // 이미지 파일 경로 또는 URL
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+}
+
+model ProductImage {
   id        String   @id @default(uuid())
   url       String // 이미지 파일 경로 또는 URL
   createdAt DateTime @default(now())
   product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
   productId String
+}
+
+model ProductLike {
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  productId String
+  createdAt DateTime @default(now())
+
+  @@id([userId, productId])
 }
 
 enum Category {
@@ -98,14 +124,16 @@ enum ProductStatus {
 }
 
 model Article {
-  id        String           @id @default(uuid())
-  title     String
-  content   String
-  createdAt DateTime         @default(now())
-  updatedAt DateTime         @updatedAt
-  comments  ArticleComment[]
-  author    User             @relation(fields: [authorId], references: [id], onDelete: Cascade)
-  authorId  String
+  id           String           @id @default(uuid())
+  title        String
+  content      String
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
+  comments     ArticleComment[]
+  likeCount    Int              @default(0)
+  author       User             @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  authorId     String
+  articleLikes ArticleLike[]
 }
 
 model ArticleComment {
@@ -128,4 +156,14 @@ model ProductComment {
   productId String
   author    User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
   authorId  String
+}
+
+model ArticleLike {
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+  article   Article  @relation(fields: [articleId], references: [id], onDelete: Cascade)
+  articleId String
+  createdAt DateTime @default(now())
+
+  @@id([userId, articleId])
 }

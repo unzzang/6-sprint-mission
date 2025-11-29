@@ -1,21 +1,19 @@
 import cors from 'cors';
 import express from 'express';
-import { PORT } from './lib/prisma.js';
-import userRouter from './routers/userRouter.js';
-import productRouter from './routers/productRouter.js';
-import articleRouter from './routers/articleRouter.js';
+import cookieParser from 'cookie-parser';
+import { PORT } from './lib/constants.js';
 import { uploadsPath } from './middlewares/imageUpload.js';
 import { errorHandler } from './middlewares/errorController.js';
+import router from './routers/index.js';
 
 const app = express();
 
 app.use(cors());
+app.use(cookieParser());
 app.use(express.json());
-app.use('/users', userRouter);
-app.use('/products', productRouter);
-app.use('/articles', articleRouter);
-app.use('/uploads', express.static(uploadsPath));
 
+app.use(router);
+app.use('/uploads', express.static(uploadsPath));
 app.use(errorHandler);
 
 // listener

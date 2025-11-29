@@ -21,10 +21,16 @@ export function getImages(files) {
   };
 }
 
-// getFullName
-export function getFullName(firstName, lastName) {
-  if (!firstName || !lastName) {
-    return undefined;
-  }
-  return lastName + firstName;
+// // getFullName
+// export function getFullName(firstName, lastName) {
+//   if (!firstName || !lastName) {
+//     return undefined;
+//   }
+//   return lastName + firstName;
+// }
+
+export function exclude(obj, keys) {
+  return Object.fromEntries(
+    Object.entries(obj).filter(([key]) => !keys.includes(key)),
+  );
 }

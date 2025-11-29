@@ -1,5 +1,5 @@
 import express from 'express';
-import productCommRouter from './productCommRouter.js';
+import productCommRouter from './productCommentRouter.js';
 import { upload } from '../middlewares/imageUpload.js';
 import { parseFormData } from '../middlewares/formDataParser.js';
 import { asyncHandler } from '../lib/asyncHandler.js';
@@ -12,6 +12,7 @@ import {
   getProductList,
   deleteProduct,
 } from '../controllers/productController.js';
+import authenticate from '../middlewares/authenticate.js';
 
 const router = express.Router();
 
@@ -24,6 +25,7 @@ router
     upload.array('images', 1),
     parseFormData,
     validate(CreateProduct),
+    authenticate,
     asyncHandler(createProduct),
   )
   .get(asyncHandler(getProductList));
@@ -34,9 +36,10 @@ router
     upload.array('images', 1),
     parseFormData,
     validate(PatchProduct),
+    authenticate,
     asyncHandler(patchProduct),
   )
   .get(asyncHandler(getProductDetail))
-  .delete(asyncHandler(deleteProduct));
+  .delete(authenticate, asyncHandler(deleteProduct));
 
 export default router;

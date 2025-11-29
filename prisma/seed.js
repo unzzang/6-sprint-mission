@@ -1,21 +1,34 @@
-import { PrismaClient, Category, ProductStatus } from '@prisma/client';
+import { PrismaClient } from '@prisma/client';
 import { fakerKO as faker } from '@faker-js/faker';
+import { CATEGORIES, PRODUCT_STATUS } from '../src/lib/enums.js';
+import bcrypt from 'bcrypt';
 
 const prisma = new PrismaClient();
-
-const categories = Object.values(Category);
 
 function getRandomInt(max) {
   return Math.floor(Math.random() * max);
 }
 
-function getRandomCategory() {
-  return categories[getRandomInt(categories.length)];
-}
-
 function getRandomProductName() {
-  const adjectives = ['고급', '프리미엄', '신선한', '유기농', '한정판', '감성적인', '클래식'];
-  const items = ['커피', '와인', '초콜릿', '티셔츠', '가방', '이어폰', '캔들', '향수'];
+  const adjectives = [
+    '고급',
+    '프리미엄',
+    '신선한',
+    '유기농',
+    '한정판',
+    '감성적인',
+    '클래식',
+  ];
+  const items = [
+    '커피',
+    '와인',
+    '초콜릿',
+    '티셔츠',
+    '가방',
+    '이어폰',
+    '캔들',
+    '향수',
+  ];
   const adjective = adjectives[getRandomInt(adjectives.length)];
   const item = items[getRandomInt(items.length)];
   return `${adjective} ${item}`;
@@ -33,38 +46,45 @@ function getRandomDescription() {
   return faker.helpers.arrayElement(sentences);
 }
 
+function getRandomCategory() {
+  const category = CATEGORIES;
+  return faker.helpers.arrayElement(category);
+}
+
 function getRandomStatus() {
-  const status = ['ON_SALE', 'RESERVED', 'COMPLETE'];
+  // const status = ['ON_SALE', 'RESERVED', 'COMPLETE'];
+  const status = PRODUCT_STATUS;
   return faker.helpers.arrayElement(status);
 }
 
 async function main() {
-  console.log('Start seeding with Faker (KO)...');
-  await prisma.user.deleteMany();
-  await prisma.product.deleteMany();
-  await prisma.article.deleteMany();
-  await prisma.image.deleteMany();
-  await prisma.tag.deleteMany();
-
-  const userIds = [];
   console.log('Creating 30 users...');
 
-  for (let i = 1; i <= 30; i++) {
-    const lastName = faker.person.lastName();
-    const firstName = faker.person.firstName();
-    const fullName = lastName + firstName;
+  const hashedPassword = bcrypt.hashSync('password123', 10);
+  const userIds = [];
+
+  const uniqueNicknames = new Set();
+  while (uniqueNicknames.size < 30) {
+    uniqueNicknames.add(faker.animal.petName({ min: 2, max: 10 }));
+  }
+  const nicknames = Array.from(uniqueNicknames);
+
+  for (let i = 0; i < 30; i++) {
+    const nickname = nicknames[i];
     const createdAt = faker.date.past({ years: 2 });
     const updatedAt = faker.date.between({ from: createdAt, to: new Date() });
 
     const user = await prisma.user.create({
       data: {
-        email: faker.internet.email({ firstName, lastName }),
-        firstName: firstName,
-        lastName: lastName,
-        fullName: fullName,
+        email: faker.internet.email({
+          nickname,
+          firstName: faker.person.firstName(),
+        }),
+        nickname,
+        password: hashedPassword,
         address: faker.location.streetAddress(true),
-        createdAt: createdAt,
-        updatedAt: updatedAt,
+        createdAt,
+        updatedAt,
         userPreference: {
           create: {
             receiveEmail: faker.datatype.boolean(),
@@ -78,10 +98,8 @@ async function main() {
 
   console.log('Creating 100 products...');
   for (let i = 1; i <= 200; i++) {
-    const randomAuthorId = faker.helpers.arrayElement(userIds);
     const createdAt = faker.date.past({ years: 2 });
     const updatedAt = faker.date.between({ from: createdAt, to: new Date() });
-
     await prisma.product.create({
       data: {
         name: getRandomProductName(),
@@ -89,18 +107,17 @@ async function main() {
         category: getRandomCategory(),
         price: faker.number.int({ min: 1000, max: 200000 }),
         stock: faker.number.int({ min: 1, max: 10 }),
-        // status: ProductStatus.ON_SALE,
         status: getRandomStatus(),
-        createdAt: createdAt,
-        updatedAt: updatedAt,
-        authorId: randomAuthorId,
+        createdAt,
+        updatedAt,
+        authorId: faker.helpers.arrayElement(userIds),
       },
     });
   }
   console.log('Products created.');
 
-  console.log('Creating 30 articles...');
-  for (let i = 1; i <= 30; i++) {
+  console.log('Creating 100 articles...');
+  for (let i = 1; i <= 100; i++) {
     const randomUserIndex = getRandomInt(userIds.length);
     const randomAuthorId = userIds[randomUserIndex];
     const createdAt = faker.date.past({ years: 2 });
@@ -110,8 +127,8 @@ async function main() {
       data: {
         title: faker.lorem.sentence({ min: 3, max: 7 }),
         content: faker.lorem.paragraph(2),
-        createdAt: createdAt,
-        updatedAt: updatedAt,
+        createdAt,
+        updatedAt,
         authorId: randomAuthorId,
       },
     });
@@ -123,7 +140,7 @@ async function main() {
 
 main()
   .catch((e) => {
-    console.error(e);
+    console.error(`시드 생성중 오류:`, e);
     process.exit(1);
   })
   .finally(async () => {
