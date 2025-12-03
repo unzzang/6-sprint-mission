@@ -13,6 +13,7 @@
   },
   "devDependencies": {
     "@faker-js/faker": "^10.1.0",
+    "@types/bcrypt": "^6.0.0",
     "@types/cookie-parser": "^1.4.10",
     "@types/cors": "^2.8.19",
     "@types/dotenv": "^6.1.1",
