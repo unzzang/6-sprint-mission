@@ -1,7 +1,7 @@
 // import { authService } from '../services/authService.js';
 // import { ACCESS_TOKEN_COOKIE_NAME } from '../lib/constants.js';
 // import { Request, Response } from 'express';
-
+export {};
 // export const refresh = async (req: Request, res: Response) => {
 //   const refreshToken = req.cookie['refresh-token'];
 //   if (!refreshToken) {
@@ -9,13 +9,10 @@
 //     error.status = 401;
 //     throw error;
 //   }
-
 //   const newAccessToken = await authService.refresh(refreshToken);
-
 //   res.cookie(ACCESS_TOKEN_COOKIE_NAME, newAccessToken, {
 //     httpOnly: true,
 //     secure: process.env.NODE_ENV === 'production',
 //   });
-
 //   res.status(200).json({ message: '토큰이 성공적으로 갱신되었습니다.' });
 // };

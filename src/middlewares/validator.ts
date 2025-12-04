@@ -33,7 +33,7 @@ export const UserValidators = (userRepository: UserRepository) => {
     body('email')
       .notEmpty()
       .withMessage('이메일은 필수 항목입니다.')
-      .isEmpty()
+      .isEmail()
       .withMessage('이메일 주소를 입력해주세요.')
       .custom(async (email) => {
         const existingUser = await userRepository.findUserByEmailOrNickname({

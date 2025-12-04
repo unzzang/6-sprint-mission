@@ -1,5 +1,3 @@
-// import type으로 가져온다.
-// Prisma는 UserCreateInput 같은 타입들을 포함하는 네임스페이스(?)
 import type { Prisma, PrismaClient, User } from '@prisma/client';
 
 export class UserRepository {

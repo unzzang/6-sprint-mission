@@ -50,7 +50,10 @@ export class UserService {
       throw error;
     }
 
-    const isPasswordCorrect = await bcrypt.compare(passwordToCheck, user.password);
+    const isPasswordCorrect = await bcrypt.compare(
+      passwordToCheck,
+      user.password,
+    );
 
     // 3. 비밀번호 틀리면 에러 처리
     if (!isPasswordCorrect) {
@@ -82,6 +85,8 @@ export class UserService {
     return this.userRepository.findUserById(id);
   }
 
-  // 회원찾기
-  // async findUsers() {}
+  // 회원검색
+  async findUsers(findOptions: Prisma.UserFindManyArgs) {
+    return this.userRepository.findUsers(findOptions);
+  }
 }

@@ -8,8 +8,8 @@
   "main": "main.js",
   "scripts": {
     "build": "clear; tsc",
-    "start": "node dist/app.js",
-    "dev": "clear;nodemon --watch src --exec ts-node src/app.ts"
+    "start": "node dist/main.js",
+    "dev": "clear;nodemon --watch src --exec \"node --loader ts-node/esm src/main.ts\""
   },
   "devDependencies": {
     "@faker-js/faker": "^10.1.0",
