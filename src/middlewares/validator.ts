@@ -77,3 +77,19 @@ export const UserValidators = (userRepository: UserRepository) => {
 
   // 나중에 updateUserValidator 등 다른 검사기들도 추가 가능
 };
+
+export const AuthValidators = () => {
+  const loginValidator = [
+    // 이메일 검사
+    body('email')
+      .notEmpty()
+      .withMessage('이메일은 필수 항목입니다.')
+      .isEmail()
+      .withMessage('이메일 형식이 올바르지 않습니다.'),
+
+    // 비밀번호 검사
+    body('password').notEmpty().withMessage('비밀번호를 입력해주세요'),
+  ];
+
+  return { loginValidator };
+};

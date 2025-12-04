@@ -1,21 +1,48 @@
-// import { authService } from '../services/authService.js';
-// import { ACCESS_TOKEN_COOKIE_NAME } from '../lib/constants.js';
-// import { Request, Response } from 'express';
+import type { Request, Response, NextFunction } from 'express';
+import { prisma } from '../lib/constants.js';
+import { AuthService } from '../services/authService.js';
+import { AuthRepository } from '../repositories/authRepository.js';
+import { UserRepository } from '../repositories/userRepository.js';
 
-// export const refresh = async (req: Request, res: Response) => {
-//   const refreshToken = req.cookie['refresh-token'];
-//   if (!refreshToken) {
-//     const error = new Error('리프레시 토큰이 없습니다.');
-//     error.status = 401;
-//     throw error;
-//   }
+const authService = new AuthService(
+  new AuthRepository(prisma),
+  new UserRepository(prisma),
+);
 
-//   const newAccessToken = await authService.refresh(refreshToken);
+// 로그인 콘트롤
+export async function login(req: Request, res: Response) {
+  const { email, password } = req.body;
+  const { accessToken, refreshToken } = await authService.login({
+    email,
+    password,
+  });
+  res.cookie('refreshToken', refreshToken, {
+    httpOnly: true,
+  });
+  res.status(200).json({ message: '로그인에 성공했습니다.', accessToken });
+}
 
-//   res.cookie(ACCESS_TOKEN_COOKIE_NAME, newAccessToken, {
-//     httpOnly: true,
-//     secure: process.env.NODE_ENV === 'production',
-//   });
+// 로그아웃 콘트롤
+export async function logout(req: Request, res: Response) {
+  const userId = (req as any).user?.id;
+  if (!userId) {
+    throw new Error('인증되지 않은 사용자입니다.');
+  }
+  await authService.logout(userId);
+  res.clearCookie('refreshToken');
+  res.status(204).send();
+}
 
-//   res.status(200).json({ message: '토큰이 성공적으로 갱신되었습니다.' });
-// };
+// 토큰 재발급 콘트롤
+export async function refresh(req: Request, res: Response) {
+  const { refreshToken } = req.cookies;
+  if (!refreshToken) {
+    throw new Error('Refresh Token이 존재하지 않습니다.');
+  }
+  const { accessToken } = await authService.refreshAccessToken(refreshToken);
+
+  res.status(200).json({
+    message: 'Access Token이 재발급되었습니다.',
+    accessToken,
+  });
+}
