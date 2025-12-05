@@ -14,6 +14,15 @@ const productRepository = new ProductRepository(prisma);
 const productService = new ProductService(productRepository);
 const productController = new ProductController(productService);
 
-router.route('/').post(isLoggedIn, asyncHandler(productController.createProduct));
+router
+  .route('/')
+  .post(isLoggedIn, asyncHandler(productController.createProduct))
+  .get(asyncHandler(productController.getProducts));
+
+router
+  .route('/:id')
+  .get(asyncHandler(productController.getProductById))
+  .patch(isLoggedIn, asyncHandler(productController.updateProduct))
+  .delete(isLoggedIn, asyncHandler(productController.deleteProduct));
 
 export default router;
