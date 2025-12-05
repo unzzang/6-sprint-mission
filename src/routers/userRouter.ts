@@ -6,12 +6,12 @@ import {
   deleteUser,
   getSearchUsers,
   getUserById,
-} from '../controllers/userController.js';
-import { asyncHandler } from '../middlewares/asyncHandler.js';
-import { UserValidators, validate } from '../middlewares/validator.js';
-import { isLoggedIn } from '../middlewares/isLoggedIn.js';
-import { UserRepository } from '../repositories/userRepository.js';
-import { prisma } from '../lib/constants.js';
+} from '../controllers/userController';
+import { asyncHandler } from '../middlewares/asyncHandler';
+import { UserValidators, validate } from '../middlewares/validator';
+import { isLoggedIn } from '../middlewares/isLoggedIn';
+import { UserRepository } from '../repositories/userRepository';
+import { prisma } from '../lib/constants';
 
 const userRepository = new UserRepository(prisma);
 const { registerValidator, deleteValidator } = UserValidators(userRepository);

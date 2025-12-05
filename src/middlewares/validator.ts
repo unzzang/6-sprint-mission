@@ -1,6 +1,6 @@
 import { body, param, validationResult } from 'express-validator';
 import { Request, Response, NextFunction } from 'express';
-import { UserRepository } from '../repositories/userRepository.js';
+import { UserRepository } from '../repositories/userRepository';
 
 // 생성된 모든 유효성 검사 규칙 실행
 // 오류시 400 상태코드와 함께 오류 응답하는 미들웨어

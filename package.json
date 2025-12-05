@@ -4,12 +4,11 @@
   "description": "",
   "license": "ISC",
   "author": "",
-  "type": "module",
   "main": "main.js",
   "scripts": {
     "build": "clear; tsc",
     "start": "node dist/main.js",
-    "dev": "clear;nodemon --watch src --exec \"node --loader ts-node/esm src/main.ts\""
+    "dev": "clear; nodemon src/main.ts"
   },
   "devDependencies": {
     "@faker-js/faker": "^10.1.0",

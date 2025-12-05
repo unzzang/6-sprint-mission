@@ -1,7 +1,7 @@
-import { prisma } from '../lib/constants.js';
+import { prisma } from '../lib/constants';
 import { Request, Response } from 'express';
-import { UserService } from '../services/userService.js';
-import { UserRepository } from '../repositories/userRepository.js';
+import { UserService } from '../services/userService';
+import { UserRepository } from '../repositories/userRepository';
 
 // import한 prisma를 UserRepository에 전달
 const userService = new UserService(new UserRepository(prisma));

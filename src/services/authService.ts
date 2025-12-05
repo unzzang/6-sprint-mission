@@ -5,8 +5,8 @@
 
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import { UserRepository } from '../repositories/userRepository.js';
-import { AuthRepository } from '../repositories/authRepository.js';
+import { UserRepository } from '../repositories/userRepository';
+import { AuthRepository } from '../repositories/authRepository';
 import type { User } from '@prisma/client';
 
 type LoginDto = {

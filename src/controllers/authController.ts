@@ -1,8 +1,8 @@
 import type { Request, Response, NextFunction } from 'express';
-import { prisma } from '../lib/constants.js';
-import { AuthService } from '../services/authService.js';
-import { AuthRepository } from '../repositories/authRepository.js';
-import { UserRepository } from '../repositories/userRepository.js';
+import { prisma } from '../lib/constants';
+import { AuthService } from '../services/authService';
+import { AuthRepository } from '../repositories/authRepository';
+import { UserRepository } from '../repositories/userRepository';
 
 const authService = new AuthService(
   new AuthRepository(prisma),

@@ -2,10 +2,10 @@ import cors from 'cors';
 import express from 'express';
 import cookieParser from 'cookie-parser';
 
-import { PORT } from './lib/constants.js';
-import { uploadPath } from './middlewares/imageUploader.js';
-import { errorHandler } from './middlewares/errorController.js';
-import router from './routers/index.js';
+import { PORT } from './lib/constants';
+import { uploadPath } from './middlewares/imageUploader';
+import { errorHandler } from './middlewares/errorController';
+import router from './routers/index';
 
 const app = express();
 
