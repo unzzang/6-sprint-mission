@@ -2,7 +2,7 @@ import { Router } from 'express';
 import authRouter from './authRouter';
 import userRouter from './userRouter';
 import productRouter from './productRouter';
-// import articleRouter from './articleRouter';
+import articleRouter from './articleRouter';
 
 const router = Router();
 
@@ -13,6 +13,6 @@ router.get('/', (req, res) => {
 router.use('/user', userRouter);
 router.use('/auth', authRouter);
 router.use('/product', productRouter);
-// router.use('/article', articleRouter);
+router.use('/article', articleRouter);
 
 export default router;

@@ -76,24 +76,7 @@ export class ProductService {
     userId: User['id'],
     data: Prisma.ProductUpdateInput,
   ) {
-    // 1. 상품 정보 조회
-    const product = await this.productRepository.findProductById(productId);
-
-    // 2. 상품 존재 확인
-    if (!product) {
-      const error = new Error('상품을 찾을 수 없습니다.');
-      (error as any).status = 404;
-      throw error;
-    }
-
-    // 3. 상품 작성자 확인
-    if (product.authorId !== userId) {
-      const error = new Error('수정권한이 없습니다.');
-      (error as any).status = 403;
-      throw error;
-    }
-
-    // 4. Repository에 수정 요청
+    await this.checkProductOwnership(productId, userId);
     return this.productRepository.updateProduct(productId, data);
   }
 
@@ -103,24 +86,29 @@ export class ProductService {
    * @param userId 삭제를 시도하는 사용자의 ID
    */
   async deleteProduct(productId: Product['id'], userId: User['id']) {
-    // 1. 상품 정보 조회
+    await this.checkProductOwnership(productId, userId);
+    return this.productRepository.deleteProduct(productId);
+  }
+
+  /**
+   * 헬퍼 메소드(private)
+   */
+  private async checkProductOwnership(
+    productId: Product['id'],
+    userId: User['id'],
+  ) {
     const product = await this.productRepository.findProductById(productId);
 
-    // 2. 상품이 존재하지 않을 경우 에러
     if (!product) {
       const error = new Error('상품을 찾을 수 없습니다.');
       (error as any).status = 404;
       throw error;
     }
 
-    // 3. 상품 작성자와 삭제 요청자가 동일한지 확인
     if (product.authorId !== userId) {
       const error = new Error('삭제 권한이 없습니다.');
       (error as any).status = 403;
       throw error;
     }
-
-    // 4. 모든 검증이 통과되면 Repository에 삭제 요청
-    return this.productRepository.deleteProduct(productId);
   }
 }

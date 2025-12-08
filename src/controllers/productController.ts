@@ -14,10 +14,15 @@ export class ProductController {
     const userId = req.user?.id;
 
     if (!userId) {
-      return res.status(401).json({ message: '인증 정보가 올바르지 않습니다.' });
+      return res
+        .status(401)
+        .json({ message: '인증 정보가 올바르지 않습니다.' });
     }
     // 서비스 레이어 호출
-    const newProduct = await this.productService.createProduct(userId, productData);
+    const newProduct = await this.productService.createProduct(
+      userId,
+      productData,
+    );
     // 성공 응답
     res.status(201).json(newProduct);
   };
@@ -78,7 +83,9 @@ export class ProductController {
 
     // 2. 사용자 인증 정보 확인
     if (!userId) {
-      return res.status(401).json({ message: '인증 정보가 올바르지 않습니다.' });
+      return res
+        .status(401)
+        .json({ message: '인증 정보가 올바르지 않습니다.' });
     }
 
     // 3. 서비스 레이어 호출(id, userId, data 전달)
@@ -98,7 +105,9 @@ export class ProductController {
     const userId = req.user?.id;
 
     if (!userId) {
-      return res.status(401).json({ message: '인증 정보가 올바르지 않습니다.' });
+      return res
+        .status(401)
+        .json({ message: '인증 정보가 올바르지 않습니다.' });
     }
 
     await this.productService.deleteProduct(id, userId);
