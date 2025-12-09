@@ -1,4 +1,3 @@
-// Prisma 관련 타입들을 가져옵니다.
 import type { Prisma, PrismaClient, User } from '@prisma/client';
 
 export class UserRepository {
