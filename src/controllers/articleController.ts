@@ -1,10 +1,7 @@
 import { Request, Response } from 'express';
 import { Article } from '@prisma/client';
 import { ArticleService, CreateArticleDTO } from '../services/articleService';
-
-interface AuthRequest extends Request {
-  user?: { id: string };
-}
+import { AuthRequest } from '../lib/types';
 
 export class ArticleController {
   constructor(private articleService: ArticleService) {}

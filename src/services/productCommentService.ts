@@ -23,28 +23,31 @@ export class ProductCommentService {
 
   async updateComment(
     commentId: ProductComment['id'],
-    userId: User['id'],
+    authorId: User['id'],
     data: Prisma.ProductCommentUpdateInput,
   ) {
-    await this.checkCommentOwner(commentId, userId);
+    await this.checkCommentOwner(commentId, authorId);
     return this.productCommentRepository.update(commentId, data);
   }
 
-  async deleteComment(commentId: ProductComment['id'], userId: User['id']) {
-    await this.checkCommentOwner(commentId, userId);
+  async deleteComment(commentId: ProductComment['id'], authorId: User['id']) {
+    await this.checkCommentOwner(commentId, authorId);
     return this.productCommentRepository.delete(commentId);
   }
 
   // 헬퍼 메소드
-  async checkCommentOwner(commentId: ProductComment['id'], userId: User['id']) {
+  async checkCommentOwner(
+    commentId: ProductComment['id'],
+    authorId: User['id'],
+  ) {
     const comment = await this.productCommentRepository.findById(commentId);
 
     if (!comment) {
       throw new Error('댓글을 찾을 수 없습니다.');
     }
 
-    if (comment.authorId !== userId) {
-      throw new Error('작성자를 수정 및 삭제할 수 있습니다.');
+    if (comment.authorId !== authorId) {
+      throw new Error('수정 및 삭제할 권한이 없습니다.');
     }
   }
 }

@@ -1,9 +1,6 @@
 import type { Request, Response } from 'express';
 import { LikeService } from '../services/likeService';
-
-interface AuthRequest extends Request {
-  user?: { id: string };
-}
+import { AuthRequest } from '../lib/types';
 
 export class LikeController {
   constructor(private likeService: LikeService) {}

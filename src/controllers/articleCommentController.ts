@@ -1,63 +1,59 @@
 import { Request, Response } from 'express';
-import { ProductCommentService } from '../services/productCommentService';
-// import { AuthRequest } from '../lib/types';
+import { ArticleCommentService } from '../services/articleCommentService';
+import { AuthRequest } from '../lib/types';
 
-interface AuthRequest extends Request {
-  user?: { id: string };
-}
-
-export class ProductCommentController {
-  constructor(private readonly productCommentService: ProductCommentService) {}
+export class ArticleCommentController {
+  constructor(private articleCommentService: ArticleCommentService) {}
 
   public createComment = async (req: AuthRequest, res: Response) => {
-    // 1. productId는 URL경로 파라미터에서 받아옴
-    const { productId } = req.params;
-    // 2. content는 요청 본문(body)에서 받아옴
+    const { articleId } = req.params;
     const { content } = req.body;
-    // 3. userId는 인증정보에서 가져옴
-    const authorId = req.user?.id;
 
-    if (!authorId) {
+    if (!req.user) {
       return res
         .status(401)
         .json({ message: '인증 정보가 올바르지 않습니다.' });
     }
+
+    const authorId = req.user.id;
 
     if (!content) {
       return res.status(400).json({ message: '댓글 내용을 입력해주세요.' });
     }
 
     // 서비스 레이어 호출
-    const newProduct = await this.productCommentService.createComment(
-      productId,
+    const newComment = await this.articleCommentService.createComment(
+      articleId,
       authorId,
       content, //body 객체 전체가 아닌, 추출한 content 문자열 전달
     );
     // 성공 응답
-    res.status(201).json(newProduct);
+    res.status(201).json(newComment);
   };
 
-  public getCommentsByProductId = async (req: AuthRequest, res: Response) => {
-    const { productId } = req.params;
-    const comments = await this.productCommentService.getComments(productId);
+  public getCommentsByArticleId = async (req: AuthRequest, res: Response) => {
+    const { articleId } = req.params;
+    const comments = await this.articleCommentService.getComments(articleId);
     res.status(200).json(comments);
   };
 
   public updateComment = async (req: AuthRequest, res: Response) => {
     const { commentId } = req.params;
     const { content } = req.body;
-    const authorId = req.user?.id;
 
-    if (!authorId) {
+    if (!req.user) {
       return res
         .status(401)
         .json({ message: '인증 정보가 올바르지 않습니다.' });
     }
+
+    const authorId = req.user.id;
+
     if (!content) {
       return res.status(400).json({ message: '수정할 내용을 입력해주세요.' });
     }
 
-    const updateComment = await this.productCommentService.updateComment(
+    const updateComment = await this.articleCommentService.updateComment(
       commentId,
       authorId,
       { content },
@@ -68,14 +64,16 @@ export class ProductCommentController {
 
   public deleteComment = async (req: AuthRequest, res: Response) => {
     const { commentId } = req.params;
-    const authorId = req.user?.id;
 
-    if (!authorId) {
+    if (!req.user) {
       return res
         .status(401)
         .json({ message: '인증 정보가 올바르지 않습니다.' });
     }
-    await this.productCommentService.deleteComment(commentId, authorId);
+
+    const authorId = req.user.id;
+
+    await this.articleCommentService.deleteComment(commentId, authorId);
     res.status(204).send();
   };
 }

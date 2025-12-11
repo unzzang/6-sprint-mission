@@ -3,6 +3,7 @@ import { prisma } from '../lib/constants';
 import { ProductCommentRepository } from '../repositories/productCommentRepository';
 import { ProductCommentService } from '../services/productCommentService';
 import { ProductCommentController } from '../controllers/productCommentController';
+import { asyncHandler } from '../middlewares/asyncHandler';
 import { isLoggedIn } from '../middlewares/isLoggedIn';
 
 const router = Router();
@@ -16,12 +17,12 @@ const productCommentController = new ProductCommentController(
 
 router
   .route('/comments/:commentId')
-  .patch(isLoggedIn, productCommentController.updateComment)
-  .delete(isLoggedIn, productCommentController.deleteComment);
+  .patch(isLoggedIn, asyncHandler(productCommentController.updateComment))
+  .delete(isLoggedIn, asyncHandler(productCommentController.deleteComment));
 
 router
   .route('/products/:productId/comments')
-  .post(isLoggedIn, productCommentController.createComment)
-  .get(productCommentController.getCommentsByProductId);
+  .post(isLoggedIn, asyncHandler(productCommentController.createComment))
+  .get(asyncHandler(productCommentController.getCommentsByProductId));
 
 export default router;

@@ -1,13 +1,14 @@
 import { Request, Response, NextFunction } from 'express';
 import { verify } from 'jsonwebtoken';
+import { AuthRequest } from '../lib/types';
 
 // Controller에서 사용할 수 있도록 Request 타입 저장
-interface AuthRequest extends Request {
-  user?: { id: string };
-}
+// interface AuthRequest extends Request {
+//   user?: { id: string };
+// }
 
 export async function isLoggedIn(
-  req: AuthRequest,
+  req: Request,
   res: Response,
   next: NextFunction,
 ) {
@@ -38,12 +39,12 @@ export async function isLoggedIn(
 
     // 4. 검증 성공 시, payload의 사용자 ID를 req.user에 할당
     // (authService에서 토큰 생성시 {userId:id} 형태로 payload를 만들었음)
-    req.user = { id: (payload as any).userId };
+    (req as AuthRequest).user = { id: (payload as any).userId };
     next();
   } catch (error) {
     // 5. 모든 종류의 토큰 오류(만료, 형식 오류 등)를 여기에서 잡읍
     const authError = new Error('유효하지 않은 토큰입니다.');
-    (authError as any).status(401); // 401 Unauthorized
+    (authError as any).status = 401; // 401 Unauthorized
 
     next(authError); //에러 핸들러로 전달
   }

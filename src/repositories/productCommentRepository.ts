@@ -33,8 +33,6 @@ export class ProductCommentRepository {
   }
 
   async delete(id: ProductComment['id']) {
-    return this.prisma.productComment.delete({
-      where: { id },
-    });
+    return this.prisma.productComment.delete({ where: { id } });
   }
 }

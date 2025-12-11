@@ -1,9 +1,6 @@
 import type { Request, Response } from 'express';
 import { ProductService, CreateProductDTO } from '../services/productService';
-
-interface AuthRequest extends Request {
-  user?: { id: string };
-}
+import { AuthRequest } from '../lib/types';
 
 export class ProductController {
   constructor(private productService: ProductService) {}
