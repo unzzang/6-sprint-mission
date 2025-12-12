@@ -80,8 +80,8 @@ where
 
 -- 1. `order_details` 테이블에서 각 피자(`pizza_id`)별로 주문된 건 수(`order_id`)를 보여주세요.
 select 
-  pizza_id,
-  count(distinct order_id) as "주문건수"
+  pizza_id
+  , count(distinct order_id) as "주문건수"
 from order_details 
 group by pizza_id
 order by 2 desc;
@@ -154,8 +154,11 @@ order by 1 desc;
     1. 피자별(`pizzas.id` 기준) 판매 수량 순위에서 피자별 판매 수량 상위에 드는 베스트 피자를 10개를 조회해 주세요. `pizzas`의 모든 컬럼을 조회하면서 각 피자에 해당하는 판매량을 `total_quantity`라는 이름으로 함께 조회합니다.
 */
 select 
-  z.id, z.type_id, z.size, z.price,
-  sum(o.quantity) as "주문수량"
+  z.id
+  , z.type_id
+  , z.size
+  , z.price
+  , sum(o.quantity) as "주문수량"
 from order_details o
   join pizzas z on o.pizza_id = z.id
 group by z.id
@@ -167,9 +170,9 @@ limit 10;
     2. `orders` 테이블에서 2025년 3월의 일별 주문 수량을 `total_orders`라는 이름으로, 일별 총 주문 금액을 `total_amount`라는 이름으로 포함해서 조회하세요.
 */
 select 
-  "date",
-  count(distinct d.order_id) as total_orders,
-  sum(d.quantity*z.price) as total_amount 
+  "date"
+  , count(distinct d.order_id) as total_orders
+  , sum(d.quantity*z.price) as total_amount 
 from orders o
   join order_details d on o.id = d.order_id
   join pizzas z on d.pizza_id = z.id
