@@ -1,11 +1,13 @@
 import { LikeRepository } from '../repositories/likeRepository';
 import { ProductRepository } from '../repositories/productRepository';
-import type { Product, User } from '@prisma/client';
+import { ArticleRepository } from '../repositories/articleRepository';
+import type { Product, Article, User } from '@prisma/client';
 
 export class LikeService {
   constructor(
     private likeRepository: LikeRepository,
     private productRepository: ProductRepository,
+    private articleRepository: ArticleRepository,
   ) {}
 
   async toggleProductLike(userId: User['id'], productId: Product['id']) {
@@ -30,7 +32,7 @@ export class LikeService {
         productId,
       );
       // 클라이언트에게 현재 '좋아요'상태 전달
-      return { liked: false, likeCount: updatedProduct.likeCount - 1 };
+      return { liked: false, likeCount: updatedProduct.likeCount };
     } else {
       // '좋아요'가 없으면 생성 트랜잭션 실행
       const [, updatedProduct] = await this.likeRepository.createProductLike(
@@ -38,7 +40,31 @@ export class LikeService {
         productId,
       );
       // 클라이언트에게 현재 '좋아요'상태 전달
-      return { liked: true, likeCount: updatedProduct.likeCount + 1 };
+      return { liked: true, likeCount: updatedProduct.likeCount };
+    }
+  }
+
+  async toggleArticleLike(userId: User['id'], articleId: Article['id']) {
+    const article = await this.articleRepository.findArticleById(articleId);
+    if (!article) {
+      throw new Error('게시글을 찾을 수 없습니다.');
+    }
+    const existingLike = await this.likeRepository.findArticleLike(
+      userId,
+      articleId,
+    );
+    if (existingLike) {
+      const [, updatedArticle] = await this.likeRepository.deleteArticleLike(
+        userId,
+        articleId,
+      );
+      return { liked: false, likeCount: updatedArticle.likeCount };
+    } else {
+      const [, updatedArticle] = await this.likeRepository.createArticleLike(
+        userId,
+        articleId,
+      );
+      return { liked: true, likeCount: updatedArticle.likeCount };
     }
   }
 }

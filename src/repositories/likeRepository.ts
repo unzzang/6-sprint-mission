@@ -1,4 +1,4 @@
-import { Prisma, PrismaClient, Product, User } from '@prisma/client';
+import { Prisma, PrismaClient, Product, Article, User } from '@prisma/client';
 
 export class LikeRepository {
   constructor(private prisma: PrismaClient) {}
@@ -6,12 +6,7 @@ export class LikeRepository {
   // 상품 좋아요 찾기
   async findProductLike(userId: User['id'], productId: Product['id']) {
     return this.prisma.favorite.findUnique({
-      where: {
-        userId_productId: {
-          userId,
-          productId,
-        },
-      },
+      where: { userId_productId: { userId, productId } },
     });
   }
 
@@ -32,15 +27,43 @@ export class LikeRepository {
   async deleteProductLike(userId: User['id'], productId: Product['id']) {
     return this.prisma.$transaction([
       this.prisma.favorite.delete({
-        where: {
-          userId_productId: {
-            userId,
-            productId,
-          },
-        },
+        where: { userId_productId: { userId, productId } },
       }),
       this.prisma.product.update({
         where: { id: productId },
+        data: { likeCount: { decrement: 1 } },
+      }),
+    ]);
+  }
+
+  // 게시글 좋아요 찾기
+  async findArticleLike(userId: User['id'], articleId: Article['id']) {
+    return this.prisma.like.findUnique({
+      where: { userId_articleId: { userId, articleId } },
+    });
+  }
+
+  // 게시글 좋아요 생성
+  async createArticleLike(userId: User['id'], articleId: Article['id']) {
+    return this.prisma.$transaction([
+      this.prisma.like.create({
+        data: { userId, articleId },
+      }),
+      this.prisma.article.update({
+        where: { id: articleId },
+        data: { likeCount: { increment: 1 } },
+      }),
+    ]);
+  }
+
+  // 게시글 좋아요 삭제
+  async deleteArticleLike(userId: User['id'], articleId: Article['id']) {
+    return this.prisma.$transaction([
+      this.prisma.like.delete({
+        where: { userId_articleId: { userId, articleId } },
+      }),
+      this.prisma.article.update({
+        where: { id: articleId },
         data: { likeCount: { decrement: 1 } },
       }),
     ]);

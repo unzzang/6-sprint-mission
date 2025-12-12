@@ -2,6 +2,7 @@ import { Router } from 'express';
 import { PrismaClient } from '@prisma/client';
 
 import { ProductRepository } from '../repositories/productRepository';
+import { ArticleRepository } from '../repositories/articleRepository';
 import { ProductService } from '../services/productService';
 import { ProductController } from '../controllers/productController';
 import { asyncHandler } from '../middlewares/asyncHandler';
@@ -15,11 +16,16 @@ const router = Router();
 
 const prisma = new PrismaClient();
 const productRepository = new ProductRepository(prisma);
+const articleRepository = new ArticleRepository(prisma);
 const productService = new ProductService(productRepository);
 const productController = new ProductController(productService);
 
 const likeRepository = new LikeRepository(prisma);
-const likeService = new LikeService(likeRepository, productRepository);
+const likeService = new LikeService(
+  likeRepository,
+  productRepository,
+  articleRepository,
+);
 const likeController = new LikeController(likeService);
 
 router

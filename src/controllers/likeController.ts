@@ -8,13 +8,26 @@ export class LikeController {
   // 상품 좋아요 토글
   public toggleProductLike = async (req: AuthRequest, res: Response) => {
     const { id: productId } = req.params;
-    const userId = req.user?.id;
+    const userId = req.user.id;
 
     if (!userId) {
       return res.status(401).json({ message: '인증 정보가 올바르지 않습니다' });
     }
     const result = await this.likeService.toggleProductLike(userId, productId);
 
+    res.status(200).json(result);
+  };
+
+  public toggleArticleLike = async (req: AuthRequest, res: Response) => {
+    const { id: articleId } = req.params;
+    const userId = req.user.id;
+
+    if (!userId) {
+      return res
+        .status(401)
+        .json({ message: '인증 정보가 올바르지 않습니다.' });
+    }
+    const result = await this.likeService.toggleArticleLike(userId, articleId);
     res.status(200).json(result);
   };
 }

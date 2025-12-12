@@ -93,3 +93,22 @@ export const AuthValidators = () => {
 
   return { loginValidator };
 };
+
+export const ArticleValidators = () => {
+  const validateArticleId = [
+    param('articleId')
+      .notEmpty()
+      .withMessage('게시글 ID는 필수 항목입니다.')
+      .isUUID()
+      .withMessage('유효하지 않은 게시글 ID 입니다.'),
+  ];
+
+  const validateId = [
+    param('id')
+      .notEmpty()
+      .withMessage('게시글 ID는 필수 항목입니다.')
+      .isUUID()
+      .withMessage('유효하지 않은 게시글 ID 입니다.'),
+  ];
+  return { validateArticleId, validateId };
+};
