@@ -1,16 +1,21 @@
 import { Router } from 'express';
 import { PrismaClient } from '@prisma/client';
+import { body, param } from 'express-validator';
+
+import { pagination } from '../middlewares/pagination';
+import { isLoggedIn } from '../middlewares/isLoggedIn';
+import { asyncHandler } from '../middlewares/asyncHandler';
 import { validate, ArticleValidators } from '../middlewares/validator';
+
 import { ArticleRepository } from '../repositories/articleRepository';
-import { ProductRepository } from '../repositories/productRepository';
 import { ArticleService } from '../services/articleService';
 import { ArticleController } from '../controllers/articleController';
-import { asyncHandler } from '../middlewares/asyncHandler';
-import { isLoggedIn } from '../middlewares/isLoggedIn';
 
 import { LikeRepository } from '../repositories/likeRepository';
 import { LikeService } from '../services/likeService';
 import { LikeController } from '../controllers/likeController';
+
+import { ProductRepository } from '../repositories/productRepository';
 
 const router = Router();
 
@@ -32,14 +37,20 @@ const articleValidator = ArticleValidators();
 
 router
   .route('/')
-  .post(isLoggedIn, asyncHandler(articleController.createArticle))
-  .get(asyncHandler(articleController.getArticles));
+  .post(
+    isLoggedIn,
+    articleValidator.createValidator,
+    validate,
+    asyncHandler(articleController.createArticle),
+  )
+  .get(pagination, asyncHandler(articleController.getArticles));
 
 router
   .route('/:id')
   .patch(
     isLoggedIn,
     articleValidator.validateId,
+    articleValidator.updateValidator,
     validate,
     asyncHandler(articleController.updateArticle),
   )

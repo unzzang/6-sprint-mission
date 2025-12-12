@@ -110,5 +110,53 @@ export const ArticleValidators = () => {
       .isUUID()
       .withMessage('유효하지 않은 게시글 ID 입니다.'),
   ];
-  return { validateArticleId, validateId };
+
+  const createValidator = [
+    body('title').notEmpty().withMessage('제목을 입력해주세요.'),
+    body('content').notEmpty().withMessage('내용을 입력해주세요.'),
+  ];
+
+  const updateValidator = [
+    body('title').optional().notEmpty().withMessage('제목을 입력해주세요.'),
+    body('content').optional().notEmpty().withMessage('내용을 입력해주세요.'),
+  ];
+
+  return { validateArticleId, validateId, createValidator, updateValidator };
+};
+
+export const ProductValidators = () => {
+  const validateId = [
+    param('id').isUUID().withMessage('유효하지 않은 ID 형식입니다.'),
+  ];
+
+  const createValidator = [
+    body('name').trim().notEmpty().withMessage('상품 이름은 필수 항목입니다.'),
+    body('price')
+      .isFloat({ min: 0 })
+      .withMessage('가격은 0 이상의 숫자여야 합니다.'),
+    body('description').notEmpty().withMessage('상품 설명은 필수 항목입니다.'),
+    body('category').notEmpty().withMessage('카테고리는 필수 항목입니다.'),
+  ];
+
+  const updateValidator = [
+    body('name')
+      .optional()
+      .trim()
+      .notEmpty()
+      .withMessage('상품 이름은 필수 항목입니다.'),
+    body('price')
+      .optional()
+      .isFloat({ min: 0 })
+      .withMessage('가격은 0 이상의 숫자여야 합니다.'),
+    body('description')
+      .optional()
+      .notEmpty()
+      .withMessage('상품 설명은 필수 항목입니다.'),
+    body('category')
+      .optional()
+      .notEmpty()
+      .withMessage('카테고리는 필수 항목입니다.'),
+  ];
+
+  return { validateId, createValidator, updateValidator };
 };

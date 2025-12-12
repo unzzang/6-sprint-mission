@@ -28,7 +28,13 @@ export class ArticleService {
 
   // 게시물 상세 보기
   async findArticleById(id: Article['id']) {
-    return this.articleRepository.findArticleById(id);
+    const article = await this.articleRepository.findArticleById(id);
+    if (!article) {
+      const error = new Error('게시글을 찾을 수 없습니다.');
+      (error as any).status = 404;
+      throw error;
+    }
+    return article;
   }
 
   // 게시물 수정

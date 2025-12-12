@@ -1,22 +1,29 @@
 import { Router } from 'express';
 import { PrismaClient } from '@prisma/client';
+import { body, param } from 'express-validator';
+
+import { isLoggedIn } from '../middlewares/isLoggedIn';
+import { pagination } from '../middlewares/pagination';
+import { asyncHandler } from '../middlewares/asyncHandler';
+import { validate, ProductValidators } from '../middlewares/validator';
 
 import { ProductRepository } from '../repositories/productRepository';
-import { ArticleRepository } from '../repositories/articleRepository';
 import { ProductService } from '../services/productService';
 import { ProductController } from '../controllers/productController';
-import { asyncHandler } from '../middlewares/asyncHandler';
-import { isLoggedIn } from '../middlewares/isLoggedIn';
 
 import { LikeRepository } from '../repositories/likeRepository';
 import { LikeService } from '../services/likeService';
 import { LikeController } from '../controllers/likeController';
 
+import { ArticleRepository } from '../repositories/articleRepository';
+
 const router = Router();
 
 const prisma = new PrismaClient();
-const productRepository = new ProductRepository(prisma);
+
 const articleRepository = new ArticleRepository(prisma);
+
+const productRepository = new ProductRepository(prisma);
 const productService = new ProductService(productRepository);
 const productController = new ProductController(productService);
 
@@ -27,20 +34,46 @@ const likeService = new LikeService(
   articleRepository,
 );
 const likeController = new LikeController(likeService);
+const productValidator = ProductValidators();
 
 router
   .route('/')
-  .post(isLoggedIn, asyncHandler(productController.createProduct))
-  .get(asyncHandler(productController.getProducts));
+  .post(
+    isLoggedIn,
+    productValidator.createValidator,
+    validate,
+    asyncHandler(productController.createProduct),
+  )
+  .get(pagination, asyncHandler(productController.getProducts));
 
 router
   .route('/:id')
-  .get(asyncHandler(productController.getProductById))
-  .patch(isLoggedIn, asyncHandler(productController.updateProduct))
-  .delete(isLoggedIn, asyncHandler(productController.deleteProduct));
+  .get(
+    productValidator.validateId,
+    validate,
+    asyncHandler(productController.getProductById),
+  )
+  .patch(
+    isLoggedIn,
+    productValidator.validateId,
+    productValidator.updateValidator,
+    validate,
+    asyncHandler(productController.updateProduct),
+  )
+  .delete(
+    isLoggedIn,
+    productValidator.validateId,
+    validate,
+    asyncHandler(productController.deleteProduct),
+  );
 
 router
   .route('/:id/like')
-  .post(isLoggedIn, asyncHandler(likeController.toggleProductLike));
+  .post(
+    isLoggedIn,
+    productValidator.validateId,
+    validate,
+    asyncHandler(likeController.toggleProductLike),
+  );
 
 export default router;

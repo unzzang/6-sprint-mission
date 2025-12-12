@@ -62,7 +62,13 @@ export class ProductService {
    * @param id 조회할 상품의 ID
    */
   async findProductById(id: Product['id']) {
-    return this.productRepository.findProductById(id);
+    const product = await this.productRepository.findProductById(id);
+    if (!product) {
+      const error = new Error('상품을 찾을 수 없습니다.');
+      (error as any).status = 404;
+      throw error;
+    }
+    return product;
   }
 
   /**
