@@ -1,5 +1,5 @@
 import type { Response } from 'express';
-import { LikeService } from '../service/likeService';
+import { LikeService } from '../services/likeService';
 import { AuthRequest } from '../lib/types';
 
 export class LikeController {

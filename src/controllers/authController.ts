@@ -1,8 +1,8 @@
 import type { Request, Response } from 'express';
 import { prisma } from '../lib/constants';
-import { AuthService } from '../service/authService';
-import { AuthRepository } from '../repository/authRepository';
-import { UserRepository } from '../repository/userRepository';
+import { AuthService } from '../services/authService';
+import { AuthRepository } from '../repositories/authRepository';
+import { UserRepository } from '../repositories/userRepository';
 
 const authService = new AuthService(
   new AuthRepository(prisma),

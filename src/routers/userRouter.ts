@@ -5,11 +5,11 @@ import {
   deleteUser,
   getSearchUsers,
   getUserById,
-} from '../controller/userController';
-import { asyncHandler } from '../middleware/asyncHandler';
-import { UserValidators, validate } from '../middleware/validator';
-import { isLoggedIn } from '../middleware/isLoggedIn';
-import { UserRepository } from '../repository/userRepository';
+} from '../controllers/userController';
+import { asyncHandler } from '../middlewares/asyncHandler';
+import { UserValidators, validate } from '../middlewares/validator';
+import { isLoggedIn } from '../middlewares/isLoggedIn';
+import { UserRepository } from '../repositories/userRepository';
 import { prisma } from '../lib/constants';
 
 const userRepository = new UserRepository(prisma);

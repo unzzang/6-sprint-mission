@@ -1,4 +1,4 @@
-import { ArticleRepository } from '../repository/articleRepository';
+import { ArticleRepository } from '../repositories/articleRepository';
 import { Prisma, User, Article } from '@prisma/client';
 import { CreateArticleDTO } from '../lib/dto';
 

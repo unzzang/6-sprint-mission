@@ -1,5 +1,5 @@
 import { Article, ArticleComment, User, Prisma } from '@prisma/client';
-import { ArticleCommentRepository } from '../repository/articleCommentRepository';
+import { ArticleCommentRepository } from '../repositories/articleCommentRepository';
 
 export class ArticleCommentService {
   constructor(private articleCommentRepository: ArticleCommentRepository) {}

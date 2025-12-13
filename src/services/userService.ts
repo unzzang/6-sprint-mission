@@ -1,6 +1,6 @@
 import bcrypt from 'bcrypt';
 import type { Prisma, User } from '@prisma/client';
-import { UserRepository } from '../repository/userRepository';
+import { UserRepository } from '../repositories/userRepository';
 
 export class UserService {
   // constructor(생성자)를 통해 UserRepository 인스턴스 주입받음

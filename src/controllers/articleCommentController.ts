@@ -1,5 +1,5 @@
 import { Response } from 'express';
-import { ArticleCommentService } from '../service/articleCommentService';
+import { ArticleCommentService } from '../services/articleCommentService';
 import { AuthRequest } from '../lib/types';
 
 export class ArticleCommentController {

@@ -1,6 +1,6 @@
-import { LikeRepository } from '../repository/likeRepository';
-import { ProductRepository } from '../repository/productRepository';
-import { ArticleRepository } from '../repository/articleRepository';
+import { LikeRepository } from '../repositories/likeRepository';
+import { ProductRepository } from '../repositories/productRepository';
+import { ArticleRepository } from '../repositories/articleRepository';
 import type { Product, Article, User } from '@prisma/client';
 
 export class LikeService {

@@ -1,4 +1,4 @@
-import { ProductRepository } from '../repository/productRepository';
+import { ProductRepository } from '../repositories/productRepository';
 import { Prisma, Category, ProductStatus, User, Product } from '@prisma/client';
 import type { CreateProductDTO } from '../lib/dto';
 

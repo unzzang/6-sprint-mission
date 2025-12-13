@@ -1,11 +1,11 @@
 import { Router } from 'express';
 import { prisma } from '../lib/constants';
-import { ArticleCommentRepository } from '../repository/articleCommentRepository';
-import { ArticleCommentService } from '../service/articleCommentService';
-import { ArticleCommentController } from '../controller/articleCommentController';
-import { asyncHandler } from '../middleware/asyncHandler';
-import { isLoggedIn } from '../middleware/isLoggedIn';
-import { ArticleValidators, validate } from '../middleware/validator';
+import { ArticleCommentRepository } from '../repositories/articleCommentRepository';
+import { ArticleCommentService } from '../services/articleCommentService';
+import { ArticleCommentController } from '../controllers/articleCommentController';
+import { asyncHandler } from '../middlewares/asyncHandler';
+import { isLoggedIn } from '../middlewares/isLoggedIn';
+import { ArticleValidators, validate } from '../middlewares/validator';
 
 const router = Router();
 const articleCommentRepository = new ArticleCommentRepository(prisma);

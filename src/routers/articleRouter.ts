@@ -1,20 +1,20 @@
 import { Router } from 'express';
 import { PrismaClient } from '@prisma/client';
 
-import { pagination } from '../middleware/pagination';
-import { isLoggedIn } from '../middleware/isLoggedIn';
-import { asyncHandler } from '../middleware/asyncHandler';
-import { validate, ArticleValidators } from '../middleware/validator';
+import { pagination } from '../middlewares/pagination';
+import { isLoggedIn } from '../middlewares/isLoggedIn';
+import { asyncHandler } from '../middlewares/asyncHandler';
+import { validate, ArticleValidators } from '../middlewares/validator';
 
-import { ArticleRepository } from '../repository/articleRepository';
-import { ArticleService } from '../service/articleService';
-import { ArticleController } from '../controller/articleController';
+import { ArticleRepository } from '../repositories/articleRepository';
+import { ArticleService } from '../services/articleService';
+import { ArticleController } from '../controllers/articleController';
 
-import { LikeRepository } from '../repository/likeRepository';
-import { LikeService } from '../service/likeService';
-import { LikeController } from '../controller/likeController';
+import { LikeRepository } from '../repositories/likeRepository';
+import { LikeService } from '../services/likeService';
+import { LikeController } from '../controllers/likeController';
 
-import { ProductRepository } from '../repository/productRepository';
+import { ProductRepository } from '../repositories/productRepository';
 
 const router = Router();
 

@@ -1,6 +1,6 @@
 import { body, param, validationResult } from 'express-validator';
 import { Request, Response, NextFunction } from 'express';
-import { UserRepository } from '../repository/userRepository';
+import { UserRepository } from '../repositories/userRepository';
 
 /**
  * 생성된 모든 유효성 검사 재확인(validate)

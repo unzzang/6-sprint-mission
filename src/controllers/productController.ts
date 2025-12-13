@@ -1,7 +1,7 @@
 import type { Request, Response } from 'express';
 import { AuthRequest } from '../lib/types';
 import { CreateProductDTO } from '../lib/dto';
-import { ProductService } from '../service/productService';
+import { ProductService } from '../services/productService';
 
 export class ProductController {
   constructor(private productService: ProductService) {}

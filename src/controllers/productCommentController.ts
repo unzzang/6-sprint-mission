@@ -1,5 +1,5 @@
 import { Response } from 'express';
-import { ProductCommentService } from '../service/productCommentService';
+import { ProductCommentService } from '../services/productCommentService';
 import { AuthRequest } from '../lib/types';
 
 export class ProductCommentController {

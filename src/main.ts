@@ -3,9 +3,9 @@ import express from 'express';
 import cookieParser from 'cookie-parser';
 
 import { PORT } from './lib/constants';
-import { uploadPath } from './middleware/imageUploader';
-import { errorHandler } from './middleware/errorController';
-import router from './router/index';
+import { uploadPath } from './middlewares/imageUploader';
+import { errorHandler } from './middlewares/errorController';
+import router from './routers/index';
 
 const app = express();
 

@@ -1,4 +1,4 @@
-import { ProductCommentRepository } from '../repository/productCommentRepository';
+import { ProductCommentRepository } from '../repositories/productCommentRepository';
 import { Prisma, Product, User, ProductComment } from '@prisma/client';
 
 export class ProductCommentService {

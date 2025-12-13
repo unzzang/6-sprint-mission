@@ -126,7 +126,7 @@ API의 기본 경로는 `/` 입니다. (e.g., `http://localhost:3000`)
 │   └── seed.js
 ├── src/
 │   ├── main.ts
-│   ├── controller/
+│   ├── controllers/
 │   │   ├── articleCommentController.ts
 │   │   ├── articleController.ts
 │   │   ├── authController.ts
@@ -139,14 +139,14 @@ API의 기본 경로는 `/` 입니다. (e.g., `http://localhost:3000`)
 │   │   ├── dto.ts
 │   │   ├── enums.ts
 │   │   └── types.ts
-│   ├── middleware/
+│   ├── middlewares/
 │   │   ├── asyncHandler.ts
 │   │   ├── errorController.ts
 │   │   ├── imageUploader.ts
 │   │   ├── isLoggedIn.ts
 │   │   ├── pagination.ts
 │   │   └── validator.ts
-│   ├── repository/
+│   ├── repositories/
 │   │   ├── articleCommentRepository.ts
 │   │   ├── articleRepository.ts
 │   │   ├── authRepository.ts
@@ -154,7 +154,7 @@ API의 기본 경로는 `/` 입니다. (e.g., `http://localhost:3000`)
 │   │   ├── productCommentRepository.ts
 │   │   ├── productRepository.ts
 │   │   └── userRepository.ts
-│   ├── router/
+│   ├── routers/
 │   │   ├── articleCommentRouter.ts
 │   │   ├── articleRouter.ts
 │   │   ├── authRouter.ts
@@ -162,7 +162,7 @@ API의 기본 경로는 `/` 입니다. (e.g., `http://localhost:3000`)
 │   │   ├── productCommentRouter.ts
 │   │   ├── productRouter.ts
 │   │   └── userRouter.ts
-│   └── service/
+│   └── services/
 │       ├── articleCommentService.ts
 │       ├── articleService.ts
 │       ├── authService.ts

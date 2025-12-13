@@ -1,8 +1,8 @@
 import { Router } from 'express';
-import { login, logout, refresh, signUp } from '../controller/authController';
-import { asyncHandler } from '../middleware/asyncHandler';
-import { isLoggedIn } from '../middleware/isLoggedIn';
-import { AuthValidators, validate } from '../middleware/validator';
+import { login, logout, refresh, signUp } from '../controllers/authController';
+import { asyncHandler } from '../middlewares/asyncHandler';
+import { isLoggedIn } from '../middlewares/isLoggedIn';
+import { AuthValidators, validate } from '../middlewares/validator';
 
 const router = Router();
 const { loginValidator, signUpValidator } = AuthValidators();

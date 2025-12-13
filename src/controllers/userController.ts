@@ -1,7 +1,7 @@
 import { prisma } from '../lib/constants';
 import { Request, Response } from 'express';
-import { UserService } from '../service/userService';
-import { UserRepository } from '../repository/userRepository';
+import { UserService } from '../services/userService';
+import { UserRepository } from '../repositories/userRepository';
 import { AuthRequest } from '../lib/types';
 
 const userService = new UserService(new UserRepository(prisma));
