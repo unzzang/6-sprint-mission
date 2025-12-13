@@ -1,6 +1,7 @@
 import type { Request, Response } from 'express';
-import { ProductService, CreateProductDTO } from '../services/productService';
 import { AuthRequest } from '../lib/types';
+import { CreateProductDTO } from '../lib/dto';
+import { ProductService } from '../services/productService';
 
 export class ProductController {
   constructor(private productService: ProductService) {}
@@ -15,7 +16,6 @@ export class ProductController {
       userId,
       productData,
     );
-    // 성공 응답
     res.status(201).json(newProduct);
   };
 
@@ -28,33 +28,27 @@ export class ProductController {
 
   // 상품상세 조회
   public getProductById = async (req: Request, res: Response) => {
-    // 1. URL 파라미터에서 id 가져오기(문자열)
+    // URL 파라미터에서 id 가져오기(문자열)
     const { id } = req.params;
 
-    // 2. 서비스 레이어 호출(문자열 id를 그대로 전달)
+    // 서비스 레이어 호출(문자열 id를 그대로 전달)
     const product = await this.productService.findProductById(id);
-
-    // 3. 상품이 존재하지 않을 경우 404 전달
-
-    // 4. 성공 응답
     res.status(200).json(product);
   };
 
   // 상품 수정
   public updateProduct = async (req: AuthRequest, res: Response) => {
-    // 1. URL 파라미터, 요청 body, 사용자 인증 정보 가져오기
+    // URL 파라미터, 요청 body, 사용자 인증 정보 가져오기
     const { id } = req.params;
     const productData = req.body;
     const userId = req.user.id;
 
-    // 3. 서비스 레이어 호출(id, userId, data 전달)
+    // 서비스 레이어 호출(id, userId, data 전달)
     const updatedProduct = await this.productService.updateProduct(
       id,
       userId,
       productData,
     );
-
-    // 4. 성공응답
     res.status(200).json(updatedProduct);
   };
 
@@ -64,7 +58,6 @@ export class ProductController {
     const userId = req.user.id;
 
     await this.productService.deleteProduct(id, userId);
-
     res.status(204).send();
   };
 }

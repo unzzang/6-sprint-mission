@@ -2,40 +2,22 @@ import { prisma } from '../lib/constants';
 import { Request, Response } from 'express';
 import { UserService } from '../services/userService';
 import { UserRepository } from '../repositories/userRepository';
+import { AuthRequest } from '../lib/types';
 
 // import한 prisma를 UserRepository에 전달
 const userService = new UserService(new UserRepository(prisma));
 
-// 회원가입
-export async function createUser(req: Request, res: Response) {
-  const newUser = await userService.createUser(req.body);
-
-  res.status(201).json({
-    message: '회원가입이 완료되었습니다.',
-    user: {
-      id: newUser.id,
-      email: newUser.email,
-      nickname: newUser.nickname,
-    },
-  });
-}
-
 // 현재 로그인된 사용자 정보 조회
-export async function getUser(req: Request, res: Response) {
-  const userId = (req as any).user?.id;
-
-  if (!userId) {
-    return res.status(401).json({ message: 'Unauthorized' });
-  }
+export async function getUser(req: AuthRequest, res: Response) {
+  const userId = req.user.id;
 
   const user = await userService.findUserById(userId);
-
   if (!user) {
-    return res.status(404).json({ message: 'User not found' });
+    return res.status(404).json({ message: '사용자를 찾을 수 없습니다.' });
   }
 
   res.status(200).json({
-    message: 'User retrieved successfully',
+    message: '사용자가 확인되었습니다.',
     user: {
       id: user.id,
       email: user.email,
@@ -46,16 +28,13 @@ export async function getUser(req: Request, res: Response) {
 }
 
 // 회원정보 수정
-export async function updateUser(req: Request, res: Response) {
-  const userId = (req as any).user?.id;
-  if (!userId) {
-    return res.status(401).json({ message: 'Unauthorized' });
-  }
+export async function updateUser(req: AuthRequest, res: Response) {
+  const userId = req.user.id;
 
   const updatedUser = await userService.updateUser(userId, req.body);
 
   res.status(200).json({
-    message: 'User updated successfully',
+    message: '사용자 정보를 수정했습니다.',
     user: {
       id: updatedUser.id,
       email: updatedUser.email,
@@ -65,24 +44,20 @@ export async function updateUser(req: Request, res: Response) {
   });
 }
 
-// 회원 탈퇴
-export async function deleteUser(req: Request, res: Response) {
-  const userId = (req as any).user?.id;
+/**
+ * 회원 탈퇴(삭제)
+ */
+export async function deleteUser(req: AuthRequest, res: Response) {
+  const userId = req.user.id;
   const { password } = req.body;
 
-  if (!userId) {
-    return res.status(401).json({ message: 'Unauthorized' });
-  }
-
-  if (!password) {
-    return res.status(400).json({ message: 'Password is required' });
-  }
-
   await userService.deleteUser(userId, password);
-  res.status(200).json({ message: 'User deleted successfully' });
+  res.status(200).send();
 }
 
-// 회원검색
+/**
+ * 회원검색
+ */
 export async function getSearchUsers(req: Request, res: Response) {
   const { nickname } = req.query;
 
@@ -94,23 +69,21 @@ export async function getSearchUsers(req: Request, res: Response) {
   }
 
   const users = await userService.findUsers(findOptions);
-  res.status(200).json({
-    message: 'Users retrieved successfully',
-    users,
-  });
+  res.status(200).json({ message: '사용자 검색 완료!', users });
 }
 
-// 회원상세정보
+/**
+ * 회원상세정보
+ */
 export async function getUserById(req: Request, res: Response) {
   const { id } = req.params;
 
   const user = await userService.findUserById(id);
   if (!user) {
-    return res.status(404).json({ message: 'User not found' });
+    return res.status(404).json({ message: '사용자를 찾을 수 없습니다.' });
   }
+
   const { password, ...restUser } = user;
-  res.status(200).json({
-    message: 'User retrieved successfully',
-    user: restUser,
-  });
+
+  res.status(200).json({ message: '사용자 검색 완료!', user: restUser });
 }

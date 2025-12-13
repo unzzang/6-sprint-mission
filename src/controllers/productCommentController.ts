@@ -1,31 +1,15 @@
 import { Request, Response } from 'express';
 import { ProductCommentService } from '../services/productCommentService';
-// import { AuthRequest } from '../lib/types';
-
-interface AuthRequest extends Request {
-  user?: { id: string };
-}
+import { AuthRequest } from '../lib/types';
 
 export class ProductCommentController {
   constructor(private readonly productCommentService: ProductCommentService) {}
 
   public createComment = async (req: AuthRequest, res: Response) => {
-    // 1. productId는 URL경로 파라미터에서 받아옴
+    // productId는 URL 파라미터, content는 본문(body), userId는 인증정보에서 받아 옴
     const { productId } = req.params;
-    // 2. content는 요청 본문(body)에서 받아옴
     const { content } = req.body;
-    // 3. userId는 인증정보에서 가져옴
-    const authorId = req.user?.id;
-
-    if (!authorId) {
-      return res
-        .status(401)
-        .json({ message: '인증 정보가 올바르지 않습니다.' });
-    }
-
-    if (!content) {
-      return res.status(400).json({ message: '댓글 내용을 입력해주세요.' });
-    }
+    const authorId = req.user.id;
 
     // 서비스 레이어 호출
     const newProduct = await this.productCommentService.createComment(
@@ -46,16 +30,7 @@ export class ProductCommentController {
   public updateComment = async (req: AuthRequest, res: Response) => {
     const { commentId } = req.params;
     const { content } = req.body;
-    const authorId = req.user?.id;
-
-    if (!authorId) {
-      return res
-        .status(401)
-        .json({ message: '인증 정보가 올바르지 않습니다.' });
-    }
-    if (!content) {
-      return res.status(400).json({ message: '수정할 내용을 입력해주세요.' });
-    }
+    const authorId = req.user.id;
 
     const updateComment = await this.productCommentService.updateComment(
       commentId,
@@ -68,13 +43,8 @@ export class ProductCommentController {
 
   public deleteComment = async (req: AuthRequest, res: Response) => {
     const { commentId } = req.params;
-    const authorId = req.user?.id;
+    const authorId = req.user.id;
 
-    if (!authorId) {
-      return res
-        .status(401)
-        .json({ message: '인증 정보가 올바르지 않습니다.' });
-    }
     await this.productCommentService.deleteComment(commentId, authorId);
     res.status(204).send();
   };

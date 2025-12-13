@@ -2,32 +2,22 @@ import { body, param, validationResult } from 'express-validator';
 import { Request, Response, NextFunction } from 'express';
 import { UserRepository } from '../repositories/userRepository';
 
-// 생성된 모든 유효성 검사 규칙 실행
-// 오류시 400 상태코드와 함께 오류 응답하는 미들웨어
+/**
+ * 생성된 모든 유효성 검사 재확인(validate)
+ */
 export const validate = (req: Request, res: Response, next: NextFunction) => {
   const errors = validationResult(req);
-
   if (errors.isEmpty()) {
     return next(); // 오류가 없으면 다음 미들웨어로
   }
-
   // 오류가 있으면 배열 형태로 응답
   return res.status(400).json({ errors: errors.array() });
 };
 
+/**
+ * 사용자 유효성 검사(UserValidators)
+ */
 export const UserValidators = (userRepository: UserRepository) => {
-  const deleteValidator = [
-    // ID 검사
-    param('id')
-      .notEmpty()
-      .withMessage('ID는 필수 항목입니다.')
-      .isUUID()
-      .withMessage('사용자를 찾을 수 없습니다.'),
-
-    // password 검사
-    body('password').notEmpty().withMessage('비밀번호를 입력해주세요'),
-  ];
-
   const registerValidator = [
     // email 검사
     body('email')
@@ -70,30 +60,47 @@ export const UserValidators = (userRepository: UserRepository) => {
     body('address').optional().isString().withMessage('주소를 입력해주세요.'),
   ];
 
-  // 참고: 'ID'는 보통 URL 파라미터(req.param.id)로 받거나
-  // 세션에서 가져오므로, body에서 유효성을 검사하는 경우는 드물다
+  const deleteValidator = [
+    // ID 검사
+    param('id').notEmpty().isUUID().withMessage('사용자를 찾을 수 없습니다.'),
+
+    // password 검사
+    body('password').notEmpty().withMessage('비밀번호를 입력해주세요'),
+  ];
 
   return { registerValidator, deleteValidator };
-
-  // 나중에 updateUserValidator 등 다른 검사기들도 추가 가능
 };
 
+/**
+ * 인증 유효성 검사(AuthValidators)
+ */
 export const AuthValidators = () => {
-  const loginValidator = [
-    // 이메일 검사
+  const signUpValidator = [
     body('email')
       .notEmpty()
       .withMessage('이메일은 필수 항목입니다.')
       .isEmail()
       .withMessage('이메일 형식이 올바르지 않습니다.'),
 
-    // 비밀번호 검사
     body('password').notEmpty().withMessage('비밀번호를 입력해주세요'),
   ];
 
-  return { loginValidator };
+  const loginValidator = [
+    body('email')
+      .notEmpty()
+      .withMessage('이메일은 필수 항목입니다.')
+      .isEmail()
+      .withMessage('이메일 형식이 올바르지 않습니다.'),
+
+    body('password').notEmpty().withMessage('비밀번호를 입력해주세요'),
+  ];
+
+  return { loginValidator, signUpValidator };
 };
 
+/**
+ * 게시글 검증(ArticleValidators)
+ */
 export const ArticleValidators = () => {
   const validateArticleId = [
     param('articleId')
@@ -121,9 +128,32 @@ export const ArticleValidators = () => {
     body('content').optional().notEmpty().withMessage('내용을 입력해주세요.'),
   ];
 
-  return { validateArticleId, validateId, createValidator, updateValidator };
+  const createCommentValidator = [
+    param('articleId').notEmpty().withMessage('유효하지 않은 게시글 ID입니다.'),
+    body('content').notEmpty().withMessage('댓글 내용을 입력해주세요.'),
+  ];
+
+  const updateCommentValidator = [
+    param('commentId').notEmpty().withMessage('유효하지 않은 댓글 ID입니다.'),
+    body('content')
+      .optional()
+      .notEmpty()
+      .withMessage('댓글 내용을 입력해주세요.'),
+  ];
+
+  return {
+    validateArticleId,
+    validateId,
+    createValidator,
+    updateValidator,
+    createCommentValidator,
+    updateCommentValidator,
+  };
 };
 
+/**
+ * 프로덕트 검증(ProductValidators)
+ */
 export const ProductValidators = () => {
   const validateId = [
     param('id').isUUID().withMessage('유효하지 않은 ID 형식입니다.'),
@@ -158,5 +188,24 @@ export const ProductValidators = () => {
       .withMessage('카테고리는 필수 항목입니다.'),
   ];
 
-  return { validateId, createValidator, updateValidator };
+  const createCommentValidator = [
+    param('productId').notEmpty().withMessage('유효하지 않은 상품 ID입니다.'),
+    body('content').notEmpty().withMessage('댓글 내용을 입력해주세요.'),
+  ];
+
+  const updateCommentValidator = [
+    param('commentId').notEmpty().withMessage('유효하지 않은 댓글 ID입니다.'),
+    body('content')
+      .optional()
+      .notEmpty()
+      .withMessage('댓글 내용을 입력해주세요.'),
+  ];
+
+  return {
+    validateId,
+    createValidator,
+    updateValidator,
+    createCommentValidator,
+    updateCommentValidator,
+  };
 };

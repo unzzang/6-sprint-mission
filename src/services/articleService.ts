@@ -1,10 +1,6 @@
 import { ArticleRepository } from '../repositories/articleRepository';
 import { Prisma, User, Article } from '@prisma/client';
-
-export interface CreateArticleDTO {
-  title: string;
-  content: string;
-}
+import { CreateArticleDTO } from '../lib/dto';
 
 export class ArticleService {
   constructor(private articleRepository: ArticleRepository) {}

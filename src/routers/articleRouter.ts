@@ -1,6 +1,5 @@
 import { Router } from 'express';
 import { PrismaClient } from '@prisma/client';
-import { body, param } from 'express-validator';
 
 import { pagination } from '../middlewares/pagination';
 import { isLoggedIn } from '../middlewares/isLoggedIn';

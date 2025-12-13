@@ -11,20 +11,19 @@ export class LikeService {
   ) {}
 
   async toggleProductLike(userId: User['id'], productId: Product['id']) {
-    // 1. 상품 존재 여부 확인
+    // 상품 존재 여부 확인
     const product = await this.productRepository.findProductById(productId);
     if (!product) {
-      // 상품이 없을 경우
       throw new Error('상품을 찾을 수 없습니다.');
     }
 
-    // 2. 사용자가 이미 해당 상품에 '좋아요'를 눌렀는지 확인
+    // 사용자가 이미 해당 상품에 '좋아요'를 눌렀는지 확인
     const existingLike = await this.likeRepository.findProductLike(
       userId,
       productId,
     );
 
-    // 3. 토글 로직 수행
+    // 토글 로직 수행
     if (existingLike) {
       // '좋아요'가 이미 존자하면 삭제 트랜잭션 실행
       const [, updatedProduct] = await this.likeRepository.deleteProductLike(

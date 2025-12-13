@@ -14,8 +14,8 @@ router.get('/', (req, res) => {
 
 router.use('/user', userRouter);
 router.use('/auth', authRouter);
-router.use('/product', productRouter);
-router.use('/article', articleRouter);
+router.use('/products', productRouter);
+router.use('/articles', articleRouter);
 
 router.use(productCommentRouter);
 router.use(articleCommentRouter);

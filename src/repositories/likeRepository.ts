@@ -1,4 +1,4 @@
-import { Prisma, PrismaClient, Product, Article, User } from '@prisma/client';
+import { PrismaClient, Product, Article, User } from '@prisma/client';
 
 export class LikeRepository {
   constructor(private prisma: PrismaClient) {}

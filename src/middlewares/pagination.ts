@@ -14,6 +14,5 @@ export const pagination = (req: Request, res: Response, next: NextFunction) => {
   const take = limit;
 
   (req as any).pagination = { skip, take };
-
   next();
 };

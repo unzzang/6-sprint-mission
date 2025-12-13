@@ -1,22 +1,9 @@
 import { ProductRepository } from '../repositories/productRepository';
 import { Prisma, Category, ProductStatus, User, Product } from '@prisma/client';
-
-// Controller에서 Service로 데이터를 넘겨줄 때 사용할 데이터 형태(DTO) 정의
-// 이미지 URL과 태그 이름은 문자열로 받음
-export interface CreateProductDTO {
-  name: string;
-  description: string;
-  category: Category;
-  price: number;
-  stock: number;
-  status: ProductStatus;
-  tags: string[];
-  images: string[];
-}
+import type { CreateProductDTO } from '../lib/dto';
 
 export class ProductService {
-  // 생성자(constructor)에서 ProductRepository의 인스턴스 주입받음
-  // 이렇게 하면 Service는 Repository의 기능 사용가능
+  // 생성자(constructor)에서 ProductRepository의 인스턴스 주입 받음
   constructor(private productRepository: ProductRepository) {}
 
   /**
@@ -36,13 +23,15 @@ export class ProductService {
       stock,
       status,
       author: { connect: { id } },
-      images: { create: images.map((url) => ({ url })) },
-      tags: {
-        connectOrCreate: tags.map((tagName) => ({
-          where: { tag: tagName },
-          create: { tag: tagName },
-        })),
-      },
+      images: images ? { create: images.map((url) => ({ url })) } : undefined,
+      tags: tags
+        ? {
+            connectOrCreate: tags.map((tagName) => ({
+              where: { tag: tagName },
+              create: { tag: tagName },
+            })),
+          }
+        : undefined,
     };
     const newProduct = await this.productRepository.createProduct(dataToCreate);
     return newProduct;
