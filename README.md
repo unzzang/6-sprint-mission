@@ -42,11 +42,11 @@ npm install
 본 프로젝트는 역할에 따라 코드를 분리하는 계층형 아키텍처(Layered Architecture)를 따릅니다.
 
 - **`src/main.ts`**: Express 애플리케이션의 진입점으로, 미들웨어 설정 및 라우터 등록을 담당합니다.
-- **`src/routers/`**: API 엔드포인트를 정의하고, 해당 경로로 들어온 요청을 적절한 컨트롤러에 연결합니다.
-- **`src/controllers/`**: HTTP 요청을 수신하여 요청 데이터를 정제하고, 비즈니스 로직을 처리하는 서비스 계층에 작업을 위임한 후, 결과를 클라이언트에 응답합니다.
-- **`src/services/`**: 애플리케이션의 핵심 비즈니스 로직을 수행합니다. 여러 리포지토리를 호출하여 데이터를 조작합니다.
-- **`src/repositories/`**: 데이터베이스와의 상호작용을 추상화합니다. Prisma 클라이언트를 사용하여 실제 데이터 CRUD 작업을 수행합니다.
-- **`src/middlewares/`**: 인증, 오류 처리, 파일 업로드(Multer), 요청 데이터 유효성 검사 등 공통 관심사를 처리하는 미들웨어를 포함합니다.
+- **`src/router/`**: API 엔드포인트를 정의하고, 해당 경로로 들어온 요청을 적절한 컨트롤러에 연결합니다.
+- **`src/controller/`**: HTTP 요청을 수신하여 요청 데이터를 정제하고, 비즈니스 로직을 처리하는 서비스 계층에 작업을 위임한 후, 결과를 클라이언트에 응답합니다.
+- **`src/service/`**: 애플리케이션의 핵심 비즈니스 로직을 수행합니다. 여러 리포지토리를 호출하여 데이터를 조작합니다.
+- **`src/repository/`**: 데이터베이스와의 상호작용을 추상화합니다. Prisma 클라이언트를 사용하여 실제 데이터 CRUD 작업을 수행합니다.
+- **`src/middleware/`**: 인증, 오류 처리, 파일 업로드(Multer), 요청 데이터 유효성 검사 등 공통 관심사를 처리하는 미들웨어를 포함합니다.
 - **`prisma/`**: Prisma 관련 파일을 관리합니다.
   - `schema.prisma`: 데이터베이스 모델, 관계, enum을 정의합니다.
   - `seed.js`: 개발용 초기 데이터를 생성합니다.
@@ -62,17 +62,57 @@ npm install
 - **댓글(Comment) 관리**: 상품 및 게시글에 대한 댓글 CRUD
 - **좋아요/즐겨찾기**: 게시글 좋아요 및 상품 즐겨찾기 기능
 
-### API Endpoints
+---
 
-주요 API 경로는 `src/routers/` 내의 각 라우터 파일에 모듈화되어 정의되어 있습니다.
+## API Endpoints
 
-- **`/auth`**: 회원가입, 로그인 등 인증 관련 API
-- **`/user`**: 사용자 프로필 관련 API
-- **`/product`**: 상품 관리(CRUD) 관련 API
-- **`/article`**: 게시글(CRUD) 관련 API
-- **`/product/:productId/comment`**: 상품 댓글 관련 API
-- **`/article/:articleId/comment`**: 게시글 댓글 관련 API
-- **`/like/:entityType/:entityId`**: 좋아요/즐겨찾기 관련 API
+API의 기본 경로는 `/` 입니다. (e.g., `http://localhost:3000`)
+
+#### 👤 인증 (Auth) - `/auth`
+| Method | Endpoint | 인증 | 설명 |
+| :--- | :--- | :-: | :--- |
+| `POST` | `/signup` | X | 신규 사용자 회원가입 |
+| `POST` | `/login` | X | 이메일/비밀번호로 로그인 |
+| `POST` | `/logout` | O | 로그아웃 (토큰 비활성화) |
+| `POST` | `/refresh` | X | Access Token 갱신 |
+
+#### 🙋‍♂️ 사용자 (User) - `/user`
+| Method | Endpoint | 인증 | 설명 |
+| :--- | :--- | :-: | :--- |
+| `GET` | `/` | O | 닉네임으로 사용자 검색 |
+| `GET` | `/:id` | X | 특정 ID의 사용자 정보 조회 |
+| `PATCH` | `/:id` | O | 현재 로그인된 사용자 정보 수정 |
+| `DELETE`| `/:id` | O | 현재 로그인된 사용자 탈퇴 |
+
+#### 📦 상품 (Products) - `/products`
+| Method | Endpoint | 인증 | 설명 |
+| :--- | :--- | :-: | :--- |
+| `GET` | `/` | X | 전체 상품 목록 조회 (페이지네이션) |
+| `POST` | `/` | O | 새 상품 등록 |
+| `GET` | `/:id` | X | 특정 상품 상세 조회 |
+| `PATCH` | `/:id` | O | 특정 상품 정보 수정 |
+| `DELETE`| `/:id` | O | 특정 상품 삭제 |
+| `POST` | `/:id/like`| O | 상품 좋아요/취소 (토글) |
+
+#### 📝 게시글 (Articles) - `/articles`
+| Method | Endpoint | 인증 | 설명 |
+| :--- | :--- | :-: | :--- |
+| `GET` | `/` | X | 전체 게시글 목록 조회 (페이지네이션) |
+| `POST` | `/` | O | 새 게시글 등록 |
+| `GET` | `/:id` | O | 특정 게시글 상세 조회 |
+| `PATCH` | `/:id` | O | 특정 게시글 정보 수정 |
+| `DELETE`| `/:id` | O | 특정 게시글 삭제 |
+| `POST` | `/:id/like`| O | 게시글 좋아요/취소 (토글) |
+
+#### 💬 댓글 (Comments)
+| Method | Endpoint | 인증 | 설명 |
+| :--- | :--- | :-: | :--- |
+| `GET` | `/products/:id/comments` | X | 특정 상품의 모든 댓글 조회 |
+| `POST` | `/products/:id/comments` | O | 특정 상품에 새 댓글 작성 |
+| `GET` | `/articles/:id/comments` | X | 특정 게시글의 모든 댓글 조회 |
+| `POST` | `/articles/:id/comments` | O | 특정 게시글에 새 댓글 작성 |
+| `PATCH` | `/comments/:id` | O | 특정 댓글 수정 |
+| `DELETE`| `/comments/:id` | O | 특정 댓글 삭제 |
 
 ---
 
@@ -85,12 +125,51 @@ npm install
 │   ├── schema.prisma
 │   └── seed.js
 ├── src/
-│   ├── controllers/
+│   ├── main.ts
+│   ├── controller/
+│   │   ├── articleCommentController.ts
+│   │   ├── articleController.ts
+│   │   ├── authController.ts
+│   │   ├── likeController.ts
+│   │   ├── productCommentController.ts
+│   │   ├── productController.ts
+│   │   └── userController.ts
 │   ├── lib/
-│   ├── middlewares/
-│   ├── repositories/
-│   ├── routers/
-│   └── services/
+│   │   ├── constants.ts
+│   │   ├── dto.ts
+│   │   ├── enums.ts
+│   │   └── types.ts
+│   ├── middleware/
+│   │   ├── asyncHandler.ts
+│   │   ├── errorController.ts
+│   │   ├── imageUploader.ts
+│   │   ├── isLoggedIn.ts
+│   │   ├── pagination.ts
+│   │   └── validator.ts
+│   ├── repository/
+│   │   ├── articleCommentRepository.ts
+│   │   ├── articleRepository.ts
+│   │   ├── authRepository.ts
+│   │   ├── likeRepository.ts
+│   │   ├── productCommentRepository.ts
+│   │   ├── productRepository.ts
+│   │   └── userRepository.ts
+│   ├── router/
+│   │   ├── articleCommentRouter.ts
+│   │   ├── articleRouter.ts
+│   │   ├── authRouter.ts
+│   │   ├── index.ts
+│   │   ├── productCommentRouter.ts
+│   │   ├── productRouter.ts
+│   │   └── userRouter.ts
+│   └── service/
+│       ├── articleCommentService.ts
+│       ├── articleService.ts
+│       ├── authService.ts
+│       ├── likeService.ts
+│       ├── productCommentService.ts
+│       ├── productService.ts
+│       └── userService.ts
 ├── uploads/
 ├── .gitignore
 ├── package.json

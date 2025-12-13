@@ -1,4 +1,7 @@
-export const CATEGORIES = [
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.PRODUCT_STATUS = exports.CATEGORIES = void 0;
+exports.CATEGORIES = [
     'FASHION',
     'BEAUTY',
     'SPORTS',
@@ -19,4 +22,4 @@ export const CATEGORIES = [
     'TOOLS_INDUSTRIAL_SUPPLIES',
     'FREE_SHARING',
 ];
-export const PRODUCT_STATUS = ['ON_SALE', 'RESERVED', 'COMPLETE'];
+exports.PRODUCT_STATUS = ['ON_SALE', 'RESERVED', 'COMPLETE'];

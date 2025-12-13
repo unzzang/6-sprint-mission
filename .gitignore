@@ -2,6 +2,7 @@ node_modules/
 __http__/
 .env
 .vscode
+dist/
 
 refactoring_checklist.md
 Sprint Mission 3.md
