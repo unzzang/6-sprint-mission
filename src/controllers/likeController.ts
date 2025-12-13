@@ -11,7 +11,6 @@ export class LikeController {
     const userId = req.user.id;
 
     const result = await this.likeService.toggleProductLike(userId, productId);
-
     res.status(200).json(result);
   };
 

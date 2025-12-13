@@ -7,33 +7,32 @@ export class ArticleCommentController {
 
   public createComment = async (req: AuthRequest, res: Response) => {
     const { articleId } = req.params;
-    const { content } = req.body;
     const authorId = req.user.id;
+    const content = req.body;
 
-    // 서비스 레이어 호출
     const newComment = await this.articleCommentService.createComment(
       articleId,
       authorId,
-      content, //body 객체 전체가 아닌, 추출한 content 문자열 전달
+      content,
     );
     res.status(201).json(newComment);
   };
 
   public getCommentsByArticleId = async (req: AuthRequest, res: Response) => {
     const { articleId } = req.params;
-    const comments = await this.articleCommentService.getComments(articleId);
-    res.status(200).json(comments);
+    const content = await this.articleCommentService.getComments(articleId);
+    res.status(200).json(content);
   };
 
   public updateComment = async (req: AuthRequest, res: Response) => {
     const { commentId } = req.params;
-    const { content } = req.body;
     const authorId = req.user.id;
+    const content = req.body;
 
     const updateComment = await this.articleCommentService.updateComment(
       commentId,
       authorId,
-      { content },
+      content,
     );
     res.status(200).json(updateComment);
   };

@@ -41,10 +41,7 @@ export async function login(req: Request, res: Response) {
  * 로그아웃(logout)
  */
 export async function logout(req: Request, res: Response) {
-  const userId = (req as any).user?.id;
-  if (!userId) {
-    throw new Error('인증되지 않은 사용자입니다.');
-  }
+  const userId = (req as any).user.id;
   await authService.logout(userId);
   res.clearCookie('refreshToken');
   res.status(204).send();

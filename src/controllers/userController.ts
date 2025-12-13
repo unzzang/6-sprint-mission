@@ -4,10 +4,8 @@ import { UserService } from '../services/userService';
 import { UserRepository } from '../repositories/userRepository';
 import { AuthRequest } from '../lib/types';
 
-// import한 prisma를 UserRepository에 전달
 const userService = new UserService(new UserRepository(prisma));
 
-// 현재 로그인된 사용자 정보 조회
 export async function getUser(req: AuthRequest, res: Response) {
   const userId = req.user.id;
 
@@ -56,7 +54,7 @@ export async function deleteUser(req: AuthRequest, res: Response) {
 }
 
 /**
- * 회원검색
+ * 회원검색(닉네임)
  */
 export async function getSearchUsers(req: Request, res: Response) {
   const { nickname } = req.query;
@@ -84,6 +82,5 @@ export async function getUserById(req: Request, res: Response) {
   }
 
   const { password, ...restUser } = user;
-
   res.status(200).json({ message: '사용자 검색 완료!', user: restUser });
 }
