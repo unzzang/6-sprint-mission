@@ -2,10 +2,8 @@ node_modules/
 __http__/
 .env
 .vscode
-dist/
 
 refactoring_checklist.md
 Sprint Mission 3.md
 IMPROVEMENT_REPORT.md
-Requirements.md
-GEMINI.md
+요구사항.md
